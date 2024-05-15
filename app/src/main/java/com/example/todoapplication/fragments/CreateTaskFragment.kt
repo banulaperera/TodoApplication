@@ -6,8 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.todoapplication.R
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class CreateTaskFragment : Fragment() {
+class CreateTaskFragment : BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
