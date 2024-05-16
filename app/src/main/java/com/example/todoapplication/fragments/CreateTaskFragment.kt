@@ -14,6 +14,12 @@ import com.example.todoapplication.model.Todo
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class CreateTaskFragment : BottomSheetDialogFragment() {
+
+    private var listener: OnTaskAddedListener? = null
+
+    fun setOnTaskAddedListener(listener: OnTaskAddedListener) {
+        this.listener = listener
+    }
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,7 +37,7 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
 
         addTask.setOnClickListener {
             if (title.text.isNotEmpty() && description.text.isNotEmpty() && date.text.isNotEmpty() && time.text.isNotEmpty()) {
-                val userId = requireArguments().getInt("userId")
+                val userId = arguments?.getInt("userId")
                 print(userId)
                 val todo = Todo(
                     title.text.toString(),
@@ -39,10 +45,11 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
                     date.text.toString(),
                     time.text.toString(),
                     false,
-                    userId
+                    userId!!
                 )
                 val db = TodoDataBaseHandler(requireContext())
                 db.insertTodoData(todo)
+                listener?.onTaskAdded()
                 dismiss()
             } else {
                 Toast.makeText(context, "Please fill out all fields", Toast.LENGTH_SHORT).show()
@@ -51,5 +58,9 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
         }
 
         return view
+    }
+
+    interface OnTaskAddedListener {
+        fun onTaskAdded()
     }
 }

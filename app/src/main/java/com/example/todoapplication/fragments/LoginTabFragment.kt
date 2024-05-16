@@ -1,5 +1,6 @@
 package com.example.todoapplication.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -38,7 +39,13 @@ class LoginTabFragment : Fragment() {
                 // Credentials are valid, proceed with login
                 Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                 val intent = Intent(activity, TodoActivity::class.java)
-                intent.putExtra("userId", validateCredentials(email, password))
+
+                val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return@setOnClickListener
+                with (sharedPref.edit()) {
+                    putInt("userId", validateCredentials(email, password)!!)
+                    apply()
+                }
+
                 startActivity(intent)
             } else {
                 // Credentials are invalid, show an error message
@@ -52,11 +59,6 @@ class LoginTabFragment : Fragment() {
     private fun validateCredentials(email: String, password: String): Int? {
         for (user in UserDataBaseHandler(requireContext()).readUserData()) {
             if (user.email == email && user.password == password) {
-                val userId = user.id
-                val createTaskFragment = CreateTaskFragment()
-                val bundle = Bundle()
-                bundle.putInt("userId", userId)
-                createTaskFragment.arguments = bundle
                 return user.id
             }
         }
