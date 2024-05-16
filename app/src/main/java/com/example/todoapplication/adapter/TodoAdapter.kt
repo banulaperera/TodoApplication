@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.todoapplication.adapter
 
 import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 import android.view.LayoutInflater
@@ -31,17 +31,6 @@ class TodoAdapter(
         return todos.size
     }
 
-    fun addTodo(todo: Todo) {
-        todos.add(todo)
-        notifyItemInserted(todos.size - 1)
-    }
-
-    fun deleteDoneTodos() {
-        todos.removeAll { todo ->
-            todo.isChecked
-        }
-        notifyDataSetChanged()
-    }
 
     private fun toggleStrikeThrough(todoTitle: TextView, description: TextView, isChecked: Boolean) {
         if (isChecked) {

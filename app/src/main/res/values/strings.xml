@@ -3,4 +3,22 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_task">Add Task</string>
+    <string name="add_an_event">Add an event</string>
+    <string name="task_time">Task time</string>
+    <string name="task_date">Task date</string>
+    <string name="task_description">Task description</string>
+    <string name="task_title">Task title</string>
+    <string name="fill_the_details_below_to_add_a_task_into_your_todo">Fill the details below to add a task into your TODO</string>
+    <string name="add_a_task">Add a task</string>
+    <string name="todo">TODO</string>
+    <string name="your_description_here">Your description here</string>
+    <string name="todo_list">Todo List</string>
+    <string name="my_profile">My profile</string>
+    <string name="login_image">Login Image</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="signup_image">Signup image</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="signup">Signup</string>
 </resources>

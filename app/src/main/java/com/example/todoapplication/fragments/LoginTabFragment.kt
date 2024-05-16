@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.example.todoapplication.R
 import com.example.todoapplication.activity.TodoActivity
+import com.example.todoapplication.database.UserDataBaseHandler
 
 class LoginTabFragment : Fragment() {
 
@@ -33,10 +34,11 @@ class LoginTabFragment : Fragment() {
             val email = emailEditText.text.toString()
             val password = passwordEditText.text.toString()
 
-            if (validateCredentials(email, password)) {
+            if (validateCredentials(email, password) != null) {
                 // Credentials are valid, proceed with login
                 Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                 val intent = Intent(activity, TodoActivity::class.java)
+                intent.putExtra("userId", validateCredentials(email, password))
                 startActivity(intent)
             } else {
                 // Credentials are invalid, show an error message
@@ -47,9 +49,17 @@ class LoginTabFragment : Fragment() {
         return view
     }
 
-    private fun validateCredentials(email: String, password: String): Boolean {
-        // TODO: Implement your own validation logic here
-        // For now, we'll just check that the fields are not empty
-        return email.isNotEmpty() && password.isNotEmpty()
+    private fun validateCredentials(email: String, password: String): Int? {
+        for (user in UserDataBaseHandler(requireContext()).readUserData()) {
+            if (user.email == email && user.password == password) {
+                val userId = user.id
+                val createTaskFragment = CreateTaskFragment()
+                val bundle = Bundle()
+                bundle.putInt("userId", userId)
+                createTaskFragment.arguments = bundle
+                return user.id
+            }
+        }
+        return null
     }
 }

@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.example.todoapplication.R
+import com.example.todoapplication.database.UserDataBaseHandler
+import com.example.todoapplication.model.User
 
 class SignupTabFragment : Fragment() {
 
@@ -36,11 +38,14 @@ class SignupTabFragment : Fragment() {
 
             if (validateCredentials(email, password, confirmPassword)) {
                 // Credentials are valid, proceed with signup
-                Toast.makeText(context, "Signup successful", Toast.LENGTH_SHORT).show()
-                // TODO: Save the credentials securely (e.g., in your database)
+                Toast.makeText(requireContext(), "Signup successful", Toast.LENGTH_SHORT).show()
+                val user = User(email, password)
+                val db = UserDataBaseHandler(requireContext())
+                db.insertUserData(user)
+
             } else {
                 // Credentials are invalid, show an error message
-                Toast.makeText(context, "Invalid email or passwords do not match", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Invalid email or passwords do not match", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -48,8 +53,14 @@ class SignupTabFragment : Fragment() {
     }
 
     private fun validateCredentials(email: String, password: String, confirmPassword: String): Boolean {
-        // TODO: Implement your own validation logic here
-        // For now, we'll just check that the fields are not empty and passwords match
-        return email.isNotEmpty() && password.isNotEmpty() && password == confirmPassword
+        if (password != confirmPassword) {
+            return false
+        }
+        for (user in UserDataBaseHandler(requireContext()).readUserData()) {
+            if (user.email == email) {
+                return false
+            }
+        }
+        return true
     }
 }

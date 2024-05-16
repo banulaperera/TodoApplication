@@ -18,11 +18,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="20dp"
-            android:padding="20dp">
+            android:padding="20dp"
+            tools:ignore="UselessParent">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="200dp"
+                android:contentDescription="@string/login_image"
                 android:src="@drawable/loginimg"/>
 
             <EditText
@@ -32,8 +34,8 @@
                 android:id="@+id/login_email"
                 android:layout_marginTop="30dp"
                 android:padding="8dp"
-                android:hint="Email"
-                android:drawableLeft="@drawable/baseline_account_circle_24"
+                android:hint="@string/email"
+                android:drawableStart="@drawable/baseline_account_circle_24"
                 android:drawablePadding="8dp"
                 android:background="@drawable/edittext_bkg"/>
 
@@ -44,9 +46,9 @@
                 android:id="@+id/login_password"
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:inputType="textPassword"
-                android:drawableLeft="@drawable/baseline_123_24"
+                android:drawableStart="@drawable/baseline_123_24"
                 android:drawablePadding="8dp"
                 android:background="@drawable/edittext_bkg"/>
 
@@ -58,7 +60,7 @@
                 android:layout_marginTop="30dp"
                 android:id="@+id/login_button"
                 android:textSize="18sp"
-                android:text="Login"
+                android:text="@string/login"
                 app:cornerRadius = "30dp"/>
 
         </LinearLayout>
