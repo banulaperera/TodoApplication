@@ -14,18 +14,24 @@ import com.example.todoapplication.R
 import com.example.todoapplication.adapter.TodoAdapter
 import com.example.todoapplication.database.TodoDataBaseHandler
 import com.example.todoapplication.fragments.CreateTaskFragment
+import com.example.todoapplication.fragments.OnTaskAddedListener
 
-class TodoActivity : AppCompatActivity(), CreateTaskFragment.OnTaskAddedListener {
+class TodoActivity : AppCompatActivity(), OnTaskAddedListener {
     private lateinit var todoAdapter: TodoAdapter
-    private val userId = intent.getIntExtra("userId", -1)
+    private var userId: Int = -1
+    private lateinit var todoItems: RecyclerView
+    private lateinit var addTask: TextView
+    private lateinit var profileImage: ImageView
     private val todoDataBaseHandler = TodoDataBaseHandler(this)
-    private val todoItems: RecyclerView = findViewById<RecyclerView>(R.id.taskRecycler)
-    private val addTask: TextView = findViewById<TextView>(R.id.addTask)
-    private val profileImage: ImageView = findViewById<ImageView>(R.id.profile)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_todo)
+
+        userId = intent.getIntExtra("userId", -1)
+        todoItems = findViewById(R.id.taskRecycler)
+        addTask = findViewById(R.id.addTask)
+        profileImage = findViewById(R.id.profile)
 
         profileImage.setOnClickListener {
             showPopupMenu(it)
@@ -40,11 +46,7 @@ class TodoActivity : AppCompatActivity(), CreateTaskFragment.OnTaskAddedListener
             createTaskFragment.show(supportFragmentManager, "create_task")
         }
 
-
-        val data = todoDataBaseHandler.readTodoData(userId)
-        todoAdapter = TodoAdapter(data)
-        todoItems.adapter = todoAdapter
-        todoItems.layoutManager = LinearLayoutManager(this)
+        onTaskAdded()
     }
 
     private fun showPopupMenu(view: View) {
@@ -68,8 +70,9 @@ class TodoActivity : AppCompatActivity(), CreateTaskFragment.OnTaskAddedListener
 
     override fun onTaskAdded() {
         val data = todoDataBaseHandler.readTodoData(userId)
-        todoAdapter = TodoAdapter(data)
+        todoAdapter = TodoAdapter(this, data)
         todoItems.adapter = todoAdapter
+        todoItems.layoutManager = LinearLayoutManager(this)
     }
 
 }

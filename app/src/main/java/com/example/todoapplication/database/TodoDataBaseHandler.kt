@@ -88,9 +88,9 @@ class TodoDataBaseHandler(context: Context) : SQLiteOpenHelper(context, "Todos",
         db.close()
     }
 
-    fun deleteTodoData(todo: Todo) {
+    fun deleteTodoData(todo: Int) {
         val db = this.writableDatabase
-        db.execSQL("DELETE FROM Todos WHERE id = ${todo.id}")
+        db.execSQL("DELETE FROM Todos WHERE id = ${todo}")
         db.close()
     }
 }
