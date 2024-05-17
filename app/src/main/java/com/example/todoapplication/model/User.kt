@@ -10,7 +10,5 @@ class User {
         this.password = password
     }
 
-    constructor() {
-
-    }
+    constructor()
 }

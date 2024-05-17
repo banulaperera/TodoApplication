@@ -25,7 +25,5 @@ class Todo {
         this.userId = userId
     }
 
-    constructor() {
-
-    }
+    constructor()
 }

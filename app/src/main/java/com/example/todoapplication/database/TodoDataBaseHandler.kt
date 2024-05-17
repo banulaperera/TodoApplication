@@ -74,23 +74,9 @@ class TodoDataBaseHandler(context: Context) : SQLiteOpenHelper(context, "Todos",
         return list
     }
 
-    fun updateTodoData(todo: Todo) {
-        val db = this.writableDatabase
-        db.execSQL("""
-            UPDATE Todos SET
-                title = '${todo.title}',
-                description = '${todo.description}',
-                date = '${todo.date}',
-                time = '${todo.time}',
-                isChecked = ${todo.isChecked}
-            WHERE id = ${todo.id}
-        """.trimIndent())
-        db.close()
-    }
-
     fun deleteTodoData(todo: Int) {
         val db = this.writableDatabase
-        db.execSQL("DELETE FROM Todos WHERE id = ${todo}")
+        db.execSQL("DELETE FROM Todos WHERE id = $todo")
         db.close()
     }
 }

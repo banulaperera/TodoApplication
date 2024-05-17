@@ -28,7 +28,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             android:text="@string/add_a_task"
-            android:textColor="@android:color/black"
+            android:textColor="@color/primary_text"
             android:textSize="22sp"
             tools:ignore="MissingPrefix" />
 
@@ -39,7 +39,7 @@
             android:layout_marginTop="10dp"
             android:text="@string/fill_the_details_below_to_add_a_task_into_your_todo"
             android:textAlignment="center"
-            android:textColor="@android:color/black"
+            android:textColor="@color/secondary_text"
             android:alpha="0.8"
             android:textSize="18sp"
             tools:ignore="MissingPrefix" />
@@ -141,12 +141,12 @@
 
         <Button
             android:layout_width="match_parent"
-            android:backgroundTint="@color/blue"
+            android:backgroundTint="@color/accent"
             android:layout_height="68dp"
             android:id="@+id/addTask"
             android:text="@string/add_task"
             android:textSize="20sp"
-            android:textColor="@color/white"
+            android:textColor="@color/icon"
             android:layout_marginTop="40dp" />
 
     </LinearLayout>

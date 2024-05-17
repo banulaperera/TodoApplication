@@ -10,6 +10,7 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapplication.R
@@ -137,7 +138,17 @@ class TodoAdapter(
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menuDelete -> {
-                    deleteTask(position)
+                    AlertDialog.Builder(context)
+                        .setTitle("Delete Task")
+                        .setMessage("Are you sure you want to delete this task?")
+                        .setPositiveButton("Yes") { _, _ ->
+                            deleteTask(position)
+                        }
+                        .setNegativeButton("No") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+                        .show()
                     true
                 }
 
@@ -149,8 +160,10 @@ class TodoAdapter(
 
 
     private fun deleteTask(position: Int) {
-        TodoDataBaseHandler(context).deleteTodoData(todos[position].id)
-        todos.removeAt(position)
-        notifyItemRemoved(position)
+        if (position < todos.size) {
+            TodoDataBaseHandler(context).deleteTodoData(todos[position].id)
+            todos.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 }

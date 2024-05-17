@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.DatePicker
@@ -48,7 +47,7 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
         val date = view.findViewById<EditText>(R.id.taskDate)
         val time = view.findViewById<EditText>(R.id.taskTime)
 
-        date.setOnTouchListener(OnTouchListener { view: View?, motionEvent: MotionEvent ->
+        date.setOnTouchListener { _: View?, motionEvent: MotionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 val c = Calendar.getInstance()
                 mYear = c[Calendar.YEAR]
@@ -65,9 +64,9 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
                 datePickerDialog!!.show()
             }
             true
-        })
+        }
 
-        time.setOnTouchListener(OnTouchListener { view: View?, motionEvent: MotionEvent ->
+        time.setOnTouchListener { _: View?, motionEvent: MotionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 // Get Current Time
                 val c = Calendar.getInstance()
@@ -85,7 +84,7 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
                 timePickerDialog!!.show()
             }
             true
-        })
+        }
 
         addTask.setOnClickListener {
             if (title.text.isNotEmpty() && description.text.isNotEmpty() && date.text.isNotEmpty() && time.text.isNotEmpty()) {

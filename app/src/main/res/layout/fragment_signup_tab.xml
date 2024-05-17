@@ -73,7 +73,9 @@
                 android:id="@+id/signup_button"
                 android:textSize="18sp"
                 android:text="@string/signup"
-                app:cornerRadius = "30dp"/>
+                app:cornerRadius = "30dp"
+                android:backgroundTint="@color/accent"
+                android:textColor="@color/primary_text"/>
 
         </LinearLayout>
 
