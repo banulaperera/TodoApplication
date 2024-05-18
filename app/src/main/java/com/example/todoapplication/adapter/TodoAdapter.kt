@@ -23,6 +23,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 class TodoAdapter(
     private val context: Context,
     private val todos: MutableList<Todo>
@@ -30,35 +31,46 @@ class TodoAdapter(
 
     class TodoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    // Sort the list based on priority, date and time
-    init {
-        todos.sortWith(compareBy({ priorityOrder(it.priority) }, { it.date }, { it.time }))
-    }
-
-    /***
-     * Priority order
-     * High -> 1
-     * Medium -> 2
-     * Low -> 3
-     * None -> 4
-     *
-     * @param priority
-     * @return Int
-     */
-    private fun priorityOrder(priority: String): Int {
-        return when (priority) {
-            "High" -> 1
-            "Medium" -> 2
-            "Low" -> 3
-            else -> 4
-        }
-    }
-
     // Date format
     private var dateFormat: SimpleDateFormat = SimpleDateFormat("EE dd MMM yyyy", Locale.US)
-
     // Input date format
     private var inputDateFormat: SimpleDateFormat = SimpleDateFormat("dd-M-yyyy", Locale.US)
+
+    // Sort the list based on priority, date and time
+    init {
+        todos.sortWith(compareByDescending { getPriority(it) })
+    }
+
+    /*****
+     * Get priority
+     * @param todo
+     * @return Int
+     *
+     * @see LocalDateTime
+     * @see DateTimeFormatter
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getPriority(todo: Todo): Int {
+        val formatter = DateTimeFormatter.ofPattern("dd-M-yyyy H:m")
+        val scheduledDateTime = LocalDateTime.parse("${todo.date} ${todo.time}", formatter)
+        var priorityScore = 0
+
+        // Check if the task is due today or is overdue
+        if (LocalDateTime.now().isAfter(scheduledDateTime) || LocalDateTime.now()
+                .toLocalDate() == scheduledDateTime.toLocalDate()
+        ) {
+            priorityScore += 1000
+        }
+
+        // Check the priority level of the task
+        when (todo.priority) {
+            "High" -> priorityScore += 300
+            "Medium" -> priorityScore += 200
+            "Low" -> priorityScore += 100
+        }
+
+        return priorityScore
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
         return TodoViewHolder(
@@ -86,7 +98,6 @@ class TodoAdapter(
      * @return Unit
      *
      * @see STRIKE_THRU_TEXT_FLAG
-     * @see paintFlags
      * @see and
      * @see or
      * @see inv
@@ -211,16 +222,8 @@ class TodoAdapter(
      *
      * @see PopupMenu
      * @see MenuInflater
-     * @see inflate
      * @see R.menu.delete_menu
-     * @see setOnMenuItemClickListener
      * @see AlertDialog
-     * @see setTitle
-     * @see setMessage
-     * @see setPositiveButton
-     * @see setNegativeButton
-     * @see create
-     * @see show
      */
     private fun showPopupMenu(
         view: View,
@@ -283,7 +286,6 @@ class TodoAdapter(
      * @return Unit
      *
      * @see TodoDataBaseHandler
-     * @see updateTodoData
      * @see notifyItemChanged
      */
     private fun updateTask(position: Int) {
@@ -300,8 +302,6 @@ class TodoAdapter(
      * @return Unit
      *
      * @see TodoDataBaseHandler
-     * @see deleteTodoData
-     * @see removeAt
      * @see notifyItemRemoved
      * @see notifyDataSetChanged
      */
