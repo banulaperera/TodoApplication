@@ -33,6 +33,7 @@ class TodoAdapter(
 
     // Date format
     private var dateFormat: SimpleDateFormat = SimpleDateFormat("EE dd MMM yyyy", Locale.US)
+
     // Input date format
     private var inputDateFormat: SimpleDateFormat = SimpleDateFormat("dd-M-yyyy", Locale.US)
 
