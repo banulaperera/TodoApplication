@@ -6,4 +6,9 @@
         android:id="@+id/menuDelete"
         android:title="@string/delete"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menuComplete"
+        android:title="@string/complete_menu"
+        app:showAsAction="ifRoom" />
 </menu>

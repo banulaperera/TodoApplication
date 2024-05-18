@@ -7,6 +7,7 @@ class Todo {
     var description: String = ""
     var date: String = ""
     var time: String = ""
+    var priority: String = ""
     var isChecked: Boolean = false
 
     constructor(
@@ -14,6 +15,7 @@ class Todo {
         description: String,
         date: String,
         time: String,
+        priority: String,
         isChecked: Boolean,
         userId: Int
     ) {
@@ -21,6 +23,7 @@ class Todo {
         this.description = description
         this.date = date
         this.time = time
+        this.priority = priority
         this.isChecked = isChecked
         this.userId = userId
     }

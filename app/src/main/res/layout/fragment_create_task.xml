@@ -136,7 +136,7 @@
             android:singleLine="true"
             android:background="@drawable/add_task_btn_border"
             android:padding="10dp"
-            android:id="@+id/taskEvent"
+            android:id="@+id/taskPriority"
             tools:ignore="MissingPrefix" />
 
         <Button

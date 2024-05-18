@@ -22,4 +22,11 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="signup">Signup</string>
     <string name="delete">Delete</string>
+    <string name="priority_level">PRIORITY</string>
+    <string name="completed">COMPLETED</string>
+    <string name="high">HIGH</string>
+    <string name="medium">MEDIUM</string>
+    <string name="low">LOW</string>
+    <string name="complete_menu">Complete</string>
+    <string name="more">more</string>
 </resources>

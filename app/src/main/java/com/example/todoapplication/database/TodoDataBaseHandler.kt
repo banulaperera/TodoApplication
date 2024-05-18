@@ -17,6 +17,7 @@ class TodoDataBaseHandler(context: Context) : SQLiteOpenHelper(context, "Todos",
                 description TEXT,
                 date TEXT,
                 time TEXT,
+                priority TEXT,
                 isChecked BOOLEAN,
                 FOREIGN KEY(user_id) REFERENCES Users(id)
             )
@@ -37,6 +38,7 @@ class TodoDataBaseHandler(context: Context) : SQLiteOpenHelper(context, "Todos",
                 description,
                 date,
                 time,
+                priority,
                 isChecked
             ) VALUES (
                 ${todo.userId},
@@ -44,6 +46,7 @@ class TodoDataBaseHandler(context: Context) : SQLiteOpenHelper(context, "Todos",
                 '${todo.description}',
                 '${todo.date}',
                 '${todo.time}',
+                '${todo.priority}',
                 ${todo.isChecked}
             )
         """.trimIndent())
@@ -64,6 +67,7 @@ class TodoDataBaseHandler(context: Context) : SQLiteOpenHelper(context, "Todos",
                     description = result.getString(result.getColumnIndex("description"))
                     date = result.getString(result.getColumnIndex("date"))
                     time = result.getString(result.getColumnIndex("time"))
+                    priority = result.getString(result.getColumnIndex("priority"))
                     isChecked = result.getString(result.getColumnIndex("isChecked")).toBoolean()
                 }
                 list.add(todo)
@@ -72,6 +76,21 @@ class TodoDataBaseHandler(context: Context) : SQLiteOpenHelper(context, "Todos",
         result.close()
         db.close()
         return list
+    }
+
+    fun updateTodoData(todo: Todo) {
+        val db = this.writableDatabase
+        db.execSQL("""
+            UPDATE Todos SET
+                title = '${todo.title}',
+                description = '${todo.description}',
+                date = '${todo.date}',
+                time = '${todo.time}',
+                priority = '${todo.priority}',
+                isChecked = ${todo.isChecked}
+            WHERE id = ${todo.id}
+        """.trimIndent())
+        db.close()
     }
 
     fun deleteTodoData(todo: Int) {

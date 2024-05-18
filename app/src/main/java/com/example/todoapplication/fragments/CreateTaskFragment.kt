@@ -46,6 +46,7 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
         val description = view.findViewById<EditText>(R.id.addTaskDescription)
         val date = view.findViewById<EditText>(R.id.taskDate)
         val time = view.findViewById<EditText>(R.id.taskTime)
+        val priority = view.findViewById<EditText>(R.id.taskPriority)
 
         date.setOnTouchListener { _: View?, motionEvent: MotionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_UP) {
@@ -86,8 +87,19 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
             true
         }
 
+        priority.setOnClickListener {
+            val priorityList = arrayOf("High", "Medium", "Low")
+            val builder = android.app.AlertDialog.Builder(context)
+            builder.setTitle("Select Priority")
+            builder.setItems(priorityList) { _, which ->
+                priority.setText(priorityList[which])
+            }
+            val dialog = builder.create()
+            dialog.show()
+        }
+
         addTask.setOnClickListener {
-            if (title.text.isNotEmpty() && description.text.isNotEmpty() && date.text.isNotEmpty() && time.text.isNotEmpty()) {
+            if (title.text.isNotEmpty() && description.text.isNotEmpty() && date.text.isNotEmpty() && time.text.isNotEmpty() && priority.text.isNotEmpty()) {
                 val userId = arguments?.getInt("userId")
                 print(userId)
                 val todo = Todo(
@@ -95,6 +107,7 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
                     description.text.toString(),
                     date.text.toString(),
                     time.text.toString(),
+                    priority.text.toString(),
                     false,
                     userId!!
                 )
