@@ -13,6 +13,7 @@ class ViewPageAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
         return 2
     }
 
+    // Returns the fragment based on the position
     override fun createFragment(position: Int): Fragment {
         if (position == 1) {
             return SignupTabFragment()

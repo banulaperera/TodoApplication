@@ -33,6 +33,34 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
     fun setOnTaskAddedListener(listener: OnTaskAddedListener) {
         this.listener = listener
     }
+
+    /***
+     * This function is called when the fragment is created.
+     * It inflates the layout for this fragment and sets the listeners for the date, time and priority fields.
+     * It also sets the listener for the addTask button which adds the task to the database.
+     *
+     * @param inflater: LayoutInflater
+     * @param container: ViewGroup?
+     * @param savedInstanceState: Bundle?
+     * @return View
+     *
+     * @see OnTaskAddedListener
+     * @see TodoDataBaseHandler
+     * @see Todo
+     * @see DatePickerDialog
+     * @see TimePickerDialog
+     * @see Calendar
+     * @see View
+     * @see ViewGroup
+     * @see Bundle
+     * @see LayoutInflater
+     * @see EditText
+     * @see Button
+     * @see Toast
+     * @see BottomSheetDialogFragment
+     * @see R.layout.fragment_create_task
+     * @see R.id.addTask
+     */
     @SuppressLint("MissingInflatedId", "ClickableViewAccessibility", "SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +76,9 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
         val time = view.findViewById<EditText>(R.id.taskTime)
         val priority = view.findViewById<EditText>(R.id.taskPriority)
 
+        // Set the listeners for the date, time and priority fields
         date.setOnTouchListener { _: View?, motionEvent: MotionEvent ->
+            // Get Current Date
             if (motionEvent.action == MotionEvent.ACTION_UP) {
                 val c = Calendar.getInstance()
                 mYear = c[Calendar.YEAR]
@@ -61,6 +91,8 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
                         datePickerDialog?.dismiss()
                     }, mYear, mMonth, mDay
                 )
+
+                // Set the minimum date to the current date
                 datePickerDialog!!.datePicker.minDate = System.currentTimeMillis() - 1000
                 datePickerDialog!!.show()
             }
@@ -89,8 +121,11 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
 
         priority.setOnClickListener {
             val priorityList = arrayOf("High", "Medium", "Low")
+
+            // Create a dialog to select the priority
             val builder = android.app.AlertDialog.Builder(context)
             builder.setTitle("Select Priority")
+            // Set the items of the dialog to the priority list
             builder.setItems(priorityList) { _, which ->
                 priority.setText(priorityList[which])
             }
@@ -99,9 +134,11 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
         }
 
         addTask.setOnClickListener {
+            // Check if all fields are filled
             if (title.text.isNotEmpty() && description.text.isNotEmpty() && date.text.isNotEmpty() && time.text.isNotEmpty() && priority.text.isNotEmpty()) {
+                // Get the userId from the arguments
                 val userId = arguments?.getInt("userId")
-                print(userId)
+                // Create a new Todo object
                 val todo = Todo(
                     title.text.toString(),
                     description.text.toString(),
@@ -111,6 +148,8 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
                     false,
                     userId!!
                 )
+
+                // Insert the task into the database
                 val db = TodoDataBaseHandler(requireContext())
                 db.insertTodoData(todo)
                 listener?.onTaskAdded()

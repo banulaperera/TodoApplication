@@ -16,13 +16,16 @@ class MainActivity : AppCompatActivity() {
         val tabLayout = findViewById<TabLayout>(R.id.tab_layout)
         val viewPager2 = findViewById<ViewPager2>(R.id.view_pager)
 
+        // Add tabs to the tab layout
         tabLayout.addTab(tabLayout.newTab().setText("Login"))
         tabLayout.addTab(tabLayout.newTab().setText("Signup"))
 
+        // Set the adapter for the view pager
         val fragmentManager = supportFragmentManager
         val viewPageAdapter = ViewPageAdapter(fragmentManager, lifecycle)
         viewPager2.adapter = viewPageAdapter
 
+        // When tab is selected, the view pager will change the current item
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 viewPager2.currentItem = tab!!.position
@@ -35,6 +38,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        // When view pager is changed, the tab layout will select the tab
         viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 tabLayout.selectTab(tabLayout.getTabAt(position))

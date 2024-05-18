@@ -58,6 +58,8 @@ class TodoDataBaseHandler(context: Context) : SQLiteOpenHelper(context, "Todos",
         val list: MutableList<Todo> = ArrayList()
         val db = this.readableDatabase
         val result = db.rawQuery("SELECT * FROM Todos WHERE user_id = $userId", null)
+
+        // Loop through the result set
         if (result.moveToFirst()) {
             do {
                 val todo = Todo().apply {

@@ -40,6 +40,7 @@ class SignupTabFragment : Fragment() {
                 // Credentials are valid, proceed with signup
                 Toast.makeText(requireContext(), "Signup successful", Toast.LENGTH_SHORT).show()
                 val user = User(email, password)
+                // Insert the user data into the database
                 val db = UserDataBaseHandler(requireContext())
                 db.insertUserData(user)
 
@@ -56,6 +57,8 @@ class SignupTabFragment : Fragment() {
         if (password != confirmPassword) {
             return false
         }
+
+        // Check if the email is already registered
         for (user in UserDataBaseHandler(requireContext()).readUserData()) {
             if (user.email == email) {
                 return false

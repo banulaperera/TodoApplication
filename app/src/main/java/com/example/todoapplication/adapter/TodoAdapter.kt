@@ -1,5 +1,6 @@
 package com.example.todoapplication.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 import android.os.Build
@@ -27,10 +28,37 @@ class TodoAdapter(
     private val todos: MutableList<Todo>
 ) : RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
 
-    private var dateFormat: SimpleDateFormat = SimpleDateFormat("EE dd MMM yyyy", Locale.US)
-    private var inputDateFormat: SimpleDateFormat = SimpleDateFormat("dd-M-yyyy", Locale.US)
-
     class TodoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    // Sort the list based on priority, date and time
+    init {
+        todos.sortWith(compareBy({ priorityOrder(it.priority) }, { it.date }, { it.time }))
+    }
+
+    /***
+     * Priority order
+     * High -> 1
+     * Medium -> 2
+     * Low -> 3
+     * None -> 4
+     *
+     * @param priority
+     * @return Int
+     */
+    private fun priorityOrder(priority: String): Int {
+        return when (priority) {
+            "High" -> 1
+            "Medium" -> 2
+            "Low" -> 3
+            else -> 4
+        }
+    }
+
+    // Date format
+    private var dateFormat: SimpleDateFormat = SimpleDateFormat("EE dd MMM yyyy", Locale.US)
+
+    // Input date format
+    private var inputDateFormat: SimpleDateFormat = SimpleDateFormat("dd-M-yyyy", Locale.US)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
         return TodoViewHolder(
@@ -46,6 +74,23 @@ class TodoAdapter(
         return todos.size
     }
 
+    /***
+     * Toggle strike through
+     * @param todoTitle
+     * @param description
+     * @param time
+     * @param date
+     * @param day
+     * @param month
+     * @param isChecked
+     * @return Unit
+     *
+     * @see STRIKE_THRU_TEXT_FLAG
+     * @see paintFlags
+     * @see and
+     * @see or
+     * @see inv
+     */
     private fun toggleStrikeThrough(
         todoTitle: TextView,
         description: TextView,
@@ -56,6 +101,7 @@ class TodoAdapter(
         isChecked: Boolean
     ) {
         if (isChecked) {
+            // Strike through the text
             todoTitle.paintFlags = todoTitle.paintFlags or STRIKE_THRU_TEXT_FLAG
             description.paintFlags = description.paintFlags or STRIKE_THRU_TEXT_FLAG
             time.paintFlags = time.paintFlags or STRIKE_THRU_TEXT_FLAG
@@ -63,6 +109,7 @@ class TodoAdapter(
             day.paintFlags = day.paintFlags or STRIKE_THRU_TEXT_FLAG
             month.paintFlags = month.paintFlags or STRIKE_THRU_TEXT_FLAG
         } else {
+            // Remove strike through
             todoTitle.paintFlags = todoTitle.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
             description.paintFlags = description.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
             time.paintFlags = time.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
@@ -87,23 +134,27 @@ class TodoAdapter(
             val priority = findViewById<TextView>(R.id.priority)
             priority.text = curTodo.priority
 
+            // Set priority color
             val priorityColor = when (curTodo.priority) {
                 "High" -> R.color.red
                 "Medium" -> R.color.yellow
                 "Low" -> R.color.green
                 else -> R.color.secondary_text
             }
-
             priority.setTextColor(context.resources.getColor(priorityColor, null))
+
             val menu = findViewById<ImageView>(R.id.options)
             val dateText = findViewById<TextView>(R.id.date)
             val dayText = findViewById<TextView>(R.id.day)
             val monthText = findViewById<TextView>(R.id.month)
 
             try {
+                // Input date format
                 val date = inputDateFormat.parse(curTodo.date)
+                // Output date format
                 val outputDateString = date?.let { dateFormat.format(it) }
 
+                // Split the date
                 val items1: Array<String> =
                     outputDateString?.split(" ".toRegex())?.dropLastWhile { it.isEmpty() }
                         ?.toTypedArray() ?: arrayOf("")
@@ -118,6 +169,7 @@ class TodoAdapter(
                 Toast.makeText(context, "Error in date format", Toast.LENGTH_SHORT).show()
             }
 
+            // Toggle strike through
             toggleStrikeThrough(
                 todoTitle,
                 description,
@@ -127,6 +179,7 @@ class TodoAdapter(
                 monthText,
                 curTodo.isChecked
             )
+            // Show popup menu
             menu.setOnClickListener {
                 showPopupMenu(
                     it,
@@ -143,6 +196,32 @@ class TodoAdapter(
         }
     }
 
+    /***
+     * Show popup menu
+     * @param view
+     * @param position
+     * @param todoTitle
+     * @param description
+     * @param time
+     * @param dateText
+     * @param dayText
+     * @param monthText
+     * @param curTodo
+     * @return Unit
+     *
+     * @see PopupMenu
+     * @see MenuInflater
+     * @see inflate
+     * @see R.menu.delete_menu
+     * @see setOnMenuItemClickListener
+     * @see AlertDialog
+     * @see setTitle
+     * @see setMessage
+     * @see setPositiveButton
+     * @see setNegativeButton
+     * @see create
+     * @see show
+     */
     private fun showPopupMenu(
         view: View,
         position: Int,
@@ -157,6 +236,7 @@ class TodoAdapter(
         val popupMenu = PopupMenu(view.context, view)
         val inflater: MenuInflater = popupMenu.menuInflater
         inflater.inflate(R.menu.delete_menu, popupMenu.menu)
+        // Set on menu item click listener
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
 
@@ -197,37 +277,75 @@ class TodoAdapter(
         popupMenu.show()
     }
 
+    /***
+     * Update task
+     * @param position
+     * @return Unit
+     *
+     * @see TodoDataBaseHandler
+     * @see updateTodoData
+     * @see notifyItemChanged
+     */
     private fun updateTask(position: Int) {
         if (position < todos.size) {
             TodoDataBaseHandler(context).updateTodoData(todos[position])
+            // Notify the adapter that an item was changed at position
             notifyItemChanged(position)
         }
     }
 
+    /***
+     * Delete task
+     * @param position
+     * @return Unit
+     *
+     * @see TodoDataBaseHandler
+     * @see deleteTodoData
+     * @see removeAt
+     * @see notifyItemRemoved
+     * @see notifyDataSetChanged
+     */
+    @SuppressLint("NotifyDataSetChanged")
     private fun deleteTask(position: Int) {
         if (position < todos.size) {
             TodoDataBaseHandler(context).deleteTodoData(todos[position].id)
             todos.removeAt(position)
+            // Notify the adapter that an item was removed at position
             notifyItemRemoved(position)
+            // Refresh the list
+            notifyDataSetChanged()
         }
     }
 
+    /***
+     * Check the status of the task
+     * @param todo
+     * @param textView
+     * @return String
+     *
+     * @see LocalDateTime
+     * @see DateTimeFormatter
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     private fun check(todo: Todo, textView: TextView): String {
         val formatter = DateTimeFormatter.ofPattern("dd-M-yyyy H:m")
         val scheduledDateTime = LocalDateTime.parse("${todo.date} ${todo.time}", formatter)
+
+        // Check the status of the task
         var status = when {
             LocalDateTime.now().isAfter(scheduledDateTime) -> "Overdue"
             todo.isChecked -> "Completed"
             else -> "Pending"
         }
 
+        // If the task is overdue or completed
         if (status == "Overdue" || todo.isChecked) {
             status = if (todo.isChecked) {
                 "Completed"
             } else "Overdue"
         }
 
+        // If the task is pending or completed
         if (status == "Pending" || todo.isChecked) {
             status = if (todo.isChecked) "Completed" else "Pending"
         }
@@ -237,6 +355,7 @@ class TodoAdapter(
             else -> R.color.secondary_text
         }
 
+        // Set text color
         textView.setTextColor(context.resources.getColor(color, null))
 
         return status
