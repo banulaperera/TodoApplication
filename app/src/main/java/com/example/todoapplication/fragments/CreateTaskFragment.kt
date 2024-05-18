@@ -1,8 +1,12 @@
 package com.example.todoapplication.fragments
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.DatePickerDialog
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.Context.ALARM_SERVICE
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -14,20 +18,23 @@ import android.widget.EditText
 import android.widget.TimePicker
 import android.widget.Toast
 import com.example.todoapplication.R
+import com.example.todoapplication.broadcast.AlertReceiver
 import com.example.todoapplication.database.TodoDataBaseHandler
 import com.example.todoapplication.model.Todo
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 class CreateTaskFragment : BottomSheetDialogFragment() {
 
     private var listener: OnTaskAddedListener? = null
     private var mYear: Int = 0
-    private var mMonth:Int = 0
-    private var mDay:Int = 0
+    private var mMonth: Int = 0
+    private var mDay: Int = 0
     private var datePickerDialog: DatePickerDialog? = null
     private var mHour = 0
-    private var mMinute:Int = 0
+    private var mMinute: Int = 0
     private var timePickerDialog: TimePickerDialog? = null
 
     fun setOnTaskAddedListener(listener: OnTaskAddedListener) {
@@ -153,6 +160,42 @@ class CreateTaskFragment : BottomSheetDialogFragment() {
                 val db = TodoDataBaseHandler(requireContext())
                 db.insertTodoData(todo)
                 listener?.onTaskAdded()
+
+                // Set the alarm
+                val alarmManager = requireActivity().getSystemService(ALARM_SERVICE) as AlarmManager
+                val alertIntent = Intent(requireContext(), AlertReceiver::class.java)
+
+                // Parse the date and time of the task
+                val dateTimeFormat = SimpleDateFormat("dd-M-yyyy H:m", Locale.getDefault())
+                val dateTime = dateTimeFormat.parse("${date.text} ${time.text}")
+
+                // Set the alarm for the task's due time
+                dateTime?.time?.let {
+                    val pendingIntentExact =
+                        PendingIntent.getBroadcast(
+                            requireContext(),
+                            0,
+                            alertIntent,
+                            PendingIntent.FLAG_IMMUTABLE
+                        )
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, it, pendingIntentExact)
+
+                    // Set the alarm for 5 minutes before the task's due time
+                    val pendingIntentEarly =
+                        PendingIntent.getBroadcast(
+                            requireContext(),
+                            1,
+                            alertIntent,
+                            PendingIntent.FLAG_IMMUTABLE
+                        )
+                    alarmManager.set(
+                        AlarmManager.RTC_WAKEUP,
+                        it - 5 * 60 * 1000,
+                        pendingIntentEarly
+                    )
+                }
+
+                Toast.makeText(context, "Task added", Toast.LENGTH_SHORT).show()
                 dismiss()
             } else {
                 Toast.makeText(context, "Please fill out all fields", Toast.LENGTH_SHORT).show()
