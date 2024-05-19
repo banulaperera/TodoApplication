@@ -9,6 +9,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.example.todoapplication.R
 import com.example.todoapplication.activity.MainActivity
+import com.example.todoapplication.adapter.TodoAdapter
 
 class AlertReceiver : BroadcastReceiver() {
 
@@ -16,7 +17,7 @@ class AlertReceiver : BroadcastReceiver() {
         val notificationManager =
             context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-        val notificationIntent = Intent(context, MainActivity::class.java)
+        val notificationIntent = Intent(context, TodoAdapter::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context, 0, notificationIntent,
             PendingIntent.FLAG_IMMUTABLE
