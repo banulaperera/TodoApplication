@@ -1,5 +1,3 @@
-Below is an attractive and professional README.md for your **Android To-Do Application** project, tailored for open-source presentation and easy reuse.
-
 ***
 
 # To-Do Application
